@@ -1,8 +1,11 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends(RcppProgress)]]
 
 #include <RcppArmadillo.h>
 #include <RcppParallel.h>
+#include <progress.hpp>	
+#include <progress_bar.hpp>
 
 using namespace RcppParallel;
 using namespace Rcpp;
@@ -70,7 +73,9 @@ struct wcmod : public Worker
   
   // Run function
   void operator()(size_t begin, size_t end) {
+    Progress p(end, true);
     for (int c = begin; c < end; ++c) {
+      p.increment();
       const arma::uvec idx = arma::conv_to<arma::uvec>::from(var.col(c) - 1);
       for (int r = 0; r < pval.n_rows; ++r) {
         // Sort pval.mat and counts
