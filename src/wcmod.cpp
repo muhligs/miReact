@@ -74,8 +74,6 @@ struct wcmod : public Worker
   void operator()(size_t begin, size_t end) {
     Progress p(end*end, true);
     for (int c = begin; c < end; ++c) {
-      if (Progress::check_abort() )
-        return -1.0;
       const arma::uvec idx = arma::conv_to<arma::uvec>::from(var.col(c) - 1);
       for (int r = 0; r < pval.n_rows; ++r) {
         p.increment();
