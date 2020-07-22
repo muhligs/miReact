@@ -5,6 +5,7 @@
 #include <RcppArmadillo.h>
 #include <RcppParallel.h>
 #include <progress.hpp>
+#include <progress_bar.hpp>
 
 using namespace RcppParallel;
 using namespace Rcpp;
