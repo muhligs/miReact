@@ -53,17 +53,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// wcmod_basic2
-arma::vec wcmod_basic2(const arma::uvec idx, const arma::mat p, const arma::mat n, const double alpha);
-RcppExport SEXP _miReact_wcmod_basic2(SEXP idxSEXP, SEXP pSEXP, SEXP nSEXP, SEXP alphaSEXP) {
+// wcmodCPP
+arma::mat wcmodCPP(arma::mat& var, arma::mat& pval, arma::mat& counts, double alpha);
+RcppExport SEXP _miReact_wcmodCPP(SEXP varSEXP, SEXP pvalSEXP, SEXP countsSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::uvec >::type idx(idxSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type p(pSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(wcmod_basic2(idx, p, n, alpha));
+    Rcpp::traits::input_parameter< arma::mat& >::type var(varSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type pval(pvalSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type counts(countsSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(wcmodCPP(var, pval, counts, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -73,7 +73,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_miReact_absC", (DL_FUNC) &_miReact_absC, 1},
     {"_miReact_pmax_arma", (DL_FUNC) &_miReact_pmax_arma, 2},
     {"_miReact_wcmod_basic", (DL_FUNC) &_miReact_wcmod_basic, 3},
-    {"_miReact_wcmod_basic2", (DL_FUNC) &_miReact_wcmod_basic2, 4},
+    {"_miReact_wcmodCPP", (DL_FUNC) &_miReact_wcmodCPP, 4},
     {NULL, NULL, 0}
 };
 

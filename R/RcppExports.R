@@ -17,7 +17,7 @@ wcmod_basic <- function(p, n, alpha) {
     .Call('_miReact_wcmod_basic', PACKAGE = 'miReact', p, n, alpha)
 }
 
-wcmod_basic2 <- function(idx, p, n, alpha) {
-    .Call('_miReact_wcmod_basic2', PACKAGE = 'miReact', idx, p, n, alpha)
+wcmodCPP <- function(var, pval, counts, alpha) {
+    .Call('_miReact_wcmodCPP', PACKAGE = 'miReact', var, pval, counts, alpha)
 }
 
