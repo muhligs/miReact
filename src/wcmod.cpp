@@ -1,7 +1,10 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::depends(RcppParallel)]]
+// [[Rcpp::depends(RcppProgress)]]
+
 #include <RcppArmadillo.h>
 #include <RcppParallel.h>
+#include <progress.hpp>
 
 using namespace RcppParallel;
 using namespace Rcpp;
@@ -69,9 +72,13 @@ struct wcmod : public Worker
   
   // Run function
   void operator()(size_t begin, size_t end) {
+    Progress p(end*end, true);
     for (int c = begin; c < end; ++c) {
+      if (Progress::check_abort() )
+        return -1.0;
       const arma::uvec idx = arma::conv_to<arma::uvec>::from(var.col(c) - 1);
       for (int r = 0; r < pval.n_rows; ++r) {
+        p.increment();
         // Sort pval.mat and counts
         const arma::vec pval_sorted = arma::conv_to<arma::vec>::from(pval.row(r))(idx);
         const arma::vec counts_sorted = arma::conv_to<arma::vec>::from(counts.row(r))(idx);
@@ -94,5 +101,5 @@ arma::mat wcmodCPP(arma::mat& var, arma::mat& pval, arma::mat& counts, double al
   // Run
   parallelFor(0, var.n_cols, Wcmod);
   
-  return Wcmod.output.t();
+  return Wcmod.output;
 }
