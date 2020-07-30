@@ -1,13 +1,14 @@
 Package: miReact
 Type: Package
-Title: Test
-Version: 0.1
-Description: Test
+Title: miReact
+Version: 0.2
+Description: Software to estimate miRNA activity from mRNA expression in single cell data
 License: GPL-3.0
-Imports: Rcpp (>= 1.0.4), RcppArmadillo, RcppParallel
+Imports: Rcpp (>= 1.0.4), RcppArmadillo, RcppParallel, dplyr, magrittr, sparseMatrixStats, sccore
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 LinkingTo: Rcpp, RcppArmadillo, RcppParallel
 NeedsCompilation: yes
 SystemRequirements: GNU make
+Remotes: hms-dbmi/sccore
