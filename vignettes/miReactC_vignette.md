@@ -155,7 +155,7 @@ p2$plotEmbedding(type='PCA',
 
     ## using provided groups as a factor
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 We see that clustering based on miRNA activity provides a fair
 distinction between most of the cell types. Let’s plot an a priori known
