@@ -97,7 +97,7 @@ miReactC <- function(sco, n.cores = 1, verbose = T) {
   
   res <- res * -1
   
-  if(verbose) cat("done!\n",format(Sys.time()),"All done!")
+  if(verbose) cat("\n",format(Sys.time()),"All done!")
   
   return(res)
 }
