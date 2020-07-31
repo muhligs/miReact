@@ -155,7 +155,7 @@ p2$plotEmbedding(type='PCA',
 
     ## using provided groups as a factor
 
-![](figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 We see that clustering based on miRNA activity provides a fair
 distinction between most of the cell types. Let’s plot an a priori known
@@ -170,7 +170,7 @@ p2$plotEmbedding(type='PCA',
 
     ## treating colors as a gradient with zlim: 0.0112585 0.5542113
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 We can also show this with a dot plot:
 
@@ -185,7 +185,7 @@ ggplot(plot.df, aes(anno, Activity, col=anno)) +
         axis.text.x = element_text(angle=90))
 ```
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 Further, we can try to identify cell type-specific miRNAs:
 
@@ -242,7 +242,7 @@ p2$plotEmbedding(type='PCA',
 
     ## treating colors as a gradient with zlim: 0 0.02275152
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 And in a dot plot:
 
@@ -257,7 +257,7 @@ ggplot(plot.df, aes(anno, Activity, col=anno)) +
         axis.text.x = element_text(angle=90))
 ```
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 Lastly, let’s plot a heatmap of the top markers for all cell types to
 investigate how well they distinguish our cells:
@@ -272,7 +272,7 @@ p2$plotGeneHeatmap(genes=genes,
                    gradient.range.quantile = 0.9)
 ```
 
-![](/tmp/Rtmp1uc4rL/preview-d12713e4e23d.dir/miReactC_vignette_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](miReactC_vignette_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 sessionInfo()
