@@ -39,7 +39,6 @@ addMotifs <- function(sco,motifs=7){
   return(sco)
   } else {
     print("tarbaserun")
-        print(getwd())
     tar <- readRDS(tar, file="./data/tarbase.rds")
     if(runparameters$species=="mm") tar <- tar[tar$species=="Mus musculus"&tar$up_down %in% c(NA,"DOWN"),]
     if(runparameters$species=="hs") tar <- tar[tar$species=="Homo sapiens"&tar$up_down %in% c("DOWN"),]
@@ -59,7 +58,6 @@ addMotifs <- function(sco,motifs=7){
     gnames <- sco$seqs$gsym
         
     motifCounts <- t(as.matrix(as.data.frame(lapply(unique(tar$mirna),function(x) as.numeric(gnames %in% tar$geneName[tar$mirna==x])))))
-    #print(motifCounts[1:5,1:5])
     colnames(motifCounts) <- sco$seqs$tid
     rownames(motifCounts) <- unique(tar$mirna)
     sco$motifCounts <- motifCounts
