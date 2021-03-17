@@ -39,7 +39,8 @@ cat("Done\n")
 cat(format(Sys.time()),"\n")
 
 params <- unlist(lapply(sco$runparameters,unlist))
-sco <- sco$me*-1 # miRNA setting, activity is inverse to motif activity
+sco$me <- sco$me*-1 # miRNA setting, activity is inverse to motif activity
+if(runparameters$out.meonly) sco <- sco$me
 setwd(runparameters$wd) # move into wd again
 cat("saving results...\n",runparameters$out.file,"\n")
 saveRDS(sco,file=runparameters$out.file)

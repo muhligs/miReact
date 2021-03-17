@@ -46,7 +46,7 @@ sink()
 #################################
 
 # run script
-waste <- system("sbatch sbatch.script", ignore.stdout = T, ignore.stderr = T)
+waste <- system("sbatch --account PCAWG sbatch.script", ignore.stdout = T, ignore.stderr = T)
 
         #waste <- system(paste("qx --no-scratch  --time=4:00:00 --mem=16g ","\"Rscript --vanilla ../code/me_mrs_script.R ",expfile,".Rdata ",sco$runparameters$alpha,"\"\n",sep=""),intern=T)
         if(i %% modulus == 0)cat("\rjob ",i," Samples ",v.start[i]," to ",v.end[i]," ") # stepwise report submission process.

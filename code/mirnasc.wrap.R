@@ -1,4 +1,4 @@
-mireact <- function(exp, motifs=7, 
+regmex.wrap <- function(exp, motifs=7, 
 	species="hs", seq.type="utr3", out.file = "res.data", out.meonly = T,	verbose = F , install.dir = "~/temp/miRNAsc", mail = NULL, memory="128g", wt="48:00:00", tarbaserun=FALSE){
 	#################################
 

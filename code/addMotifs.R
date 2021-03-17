@@ -4,6 +4,7 @@ addMotifs <- function(sco,motifs=7){
   #### checks and balances ####################
   if(!"runparameters" %in% names(sco)) stop("Run addSeqs first")
   sco$runparameters <- append(sco$runparameters,list(motifs=motifs))
+  if(!runparameters$tarbaserun){
   require(Regmex)
   #################################
   # adding the motifs:
@@ -36,5 +37,33 @@ addMotifs <- function(sco,motifs=7){
       sco$motifCounts[sco$motifCounts>2] <- 2 # added on 2020-03-03 to avoid single gene bias for high motif containing genes. 
       cat("Finished.\n")
   return(sco)
+  } else {
+    print("tarbaserun")
+        print(getwd())
+    tar <- readRDS(tar, file="./data/tarbase.rds")
+    if(runparameters$species=="mm") tar <- tar[tar$species=="Mus musculus"&tar$up_down %in% c(NA,"DOWN"),]
+    if(runparameters$species=="hs") tar <- tar[tar$species=="Homo sapiens"&tar$up_down %in% c("DOWN"),]
+        
+    sco$motifModels <- unique(tar$mirna)
+        
+    names(sco$motifModels) <- unique(tar$mirna)
+        
+    pval.mat <- matrix(0.01,nrow=length(unique(tar$mirna)),ncol=nrow(sco$exp))
+        
+    colnames(pval.mat) <- sco$seqs$tid
+        
+    rownames(pval.mat) <- unique(tar$mirna)
+        
+    sco$pval.mat <- pval.mat
+        
+    gnames <- sco$seqs$gsym
+        
+    motifCounts <- t(as.matrix(as.data.frame(lapply(unique(tar$mirna),function(x) as.numeric(gnames %in% tar$geneName[tar$mirna==x])))))
+    #print(motifCounts[1:5,1:5])
+    colnames(motifCounts) <- sco$seqs$tid
+    rownames(motifCounts) <- unique(tar$mirna)
+    sco$motifCounts <- motifCounts
+    return(sco)
+    }
   }
   ####################################################################################################################
