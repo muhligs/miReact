@@ -55,7 +55,7 @@ sink()
 #################################
 
 # run script
-waste <- system("sbatch --account PCAWG sbatch.script", ignore.stdout = T, ignore.stderr = T)
+waste <- system("sbatch sbatch.script", ignore.stdout = T, ignore.stderr = T)
 setwd(owd)
 return(paste0("Follow progress in ",wd,"/Rscript-[jobid].out"))
 }
