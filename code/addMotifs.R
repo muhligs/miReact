@@ -1,7 +1,7 @@
 ####################################################################################################################
 # add the motifs and calculate motif probabilities for the sequences.
 addMotifs <- function(sco,motifs=7){
-  #### checks and balances ####################
+  #### checks and balances #####################
   if(!"runparameters" %in% names(sco)) stop("Run addSeqs first")
   sco$runparameters <- append(sco$runparameters,list(motifs=motifs))
   if(!runparameters$tarbaserun){
