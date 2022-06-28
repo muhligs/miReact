@@ -6,7 +6,7 @@ addMotifExpression <- function(sco){
   sco$ngenes <- dim(sco$exp)[1]
   sco$nmotifs <- length(sco$motifModels)
   sco$nsamples <- dim(sco$exp)[2]
-  cat("calculating expected (median) expression values for genes\n")  
+  cat("calculating expected (median) expression values for genes\n") # Faster since data should be sparse: sco$medianExp <- sco$exp %>% Matrix::drop0() %>% sparseMatrixStats::rowMedians()
   sco$medianExp <- apply(sco$exp,1,median) 
   cat("calculating fold change rank values for each sample\n")
   var <- apply(sco$exp,2,function(x)order(x-sco$medianExp,decreasing = TRUE))

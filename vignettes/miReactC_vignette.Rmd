@@ -1,0 +1,168 @@
+---
+title: "miReact example"
+author: "Rasmus Rydbirk"
+date: "31-07-2020"
+output: github_document
+---
+
+# Downsampled Tabula Muris example
+
+Setup
+```{r}
+library(miReact)
+library(magrittr)
+library(pagoda2)
+library(ggplot2)
+```
+
+Here, we assume that motif p-values and motif counts have been prepared according to the tutorial, or the data have been downloaded.
+
+First, we load the downsampled Tabula Muris count matrix. Since scRNA-seq data are sparse by nature, we make it sparse to save time and memory. Then, we prepare our data object with counts and run parameters:
+```{r}
+cm <- readRDS("~/miReact/data/mm.exp1000downsample.rds") %>% Matrix::drop0()
+
+runparameters <- list(motifs = "7",
+                      alpha = 1e-10)
+
+sco <- list(exp = cm,
+            runparameters = runparameters)
+```
+
+Next, we run the prepareData() wrapper function to add motif sequences, patterns, p-values and counts:
+```{r}
+sco <- prepareData(sco = sco,
+                    seqs.path = "~/miReact/seqs/mm.utr3.seqs.rds", 
+                    seqlist.path = "~/miReact/seqs/mm.utr3.seqlist.rds", 
+                    patterns.path = "~/miReact/motif.models/patterns.7mer.Rdata", 
+                    pval.path = "~/miReact/motif.models/mm.seqXmot.utr3_mrs_7mer.rds", 
+                    counts.path = "~/miReact/motif.models/mm.seqXmot.counts.utr3_mrs_7mer.rds", 
+                    verbose = T)
+```
+
+Then, we calculate the miRNA activity:
+```{r}
+res <- miReactC(sco, n.cores = 50, verbose = T)
+```
+
+Next, we try to cluster the cells based on the estimated miRNA activity. For the example dataset with 1,000 cells we use Pagoda2, but for larger datasets it is possible to subdivide cells back into multiple samples for more sophisticated analyses, e.g., using Conos or Seurat.
+
+Since negative activity is arbitrary, and since single-cell pipelines are not designed to handle negative numbers, we set negative numbers to 0 before making data sparse:
+```{r}
+res0 <- res
+res0[res0 < 0] <- 0
+res0 %<>% Matrix::drop0()
+```
+
+Then, we cluster our data:
+```{r}
+p2 <- Pagoda2$new(res0, 
+                  log.scale=T, 
+                  n.cores=50)
+p2$adjustVariance(plot=F, 
+                  gam.k=10)
+p2$calculatePcaReduction(nPcs=50, 
+                         n.odgenes=3e3)
+p2$makeKnnGraph(k=40,type='PCA', 
+                center=T, 
+                distance='cosine', 
+                n.cores=50)
+p2$getKnnClusters(method=infomap.community, 
+                  type='PCA', 
+                  n.cores=50)
+p2$getEmbedding(type='PCA', 
+                embeddingType='tSNE', 
+                perplexity=50, 
+                verbose=F, 
+                n.cores=50)
+```
+
+We load the annotation included in miReact:
+```{r}
+annotation <- readRDS("~/miReact/data/mm.annotations1000downsample.rds")
+annotation.tissue <- annotation$tissue %>% setNames(annotation$cell)
+```
+
+We plot the annotation:
+```{r}
+p2$plotEmbedding(type='PCA',
+                 embeddingType='tSNE',
+                 mark.clusters=T,
+                 min.group.size=1,
+                 mark.cluster.cex=1,
+                 alpha=0.5,
+                 main='clusters (tSNE)', 
+                 groups = annotation.tissue)
+```
+
+We see that clustering based on miRNA activity provides a fair distinction between most of the cell types.
+Let's plot an a priori known liver-specific miRNA in our embedding:
+```{r}
+p2$plotEmbedding(type='PCA', 
+                 embeddingType='tSNE', 
+                 colors=p2$counts[,"ACACTCC"], 
+                 main="miR-122-5p activity")
+```
+
+We can also show this with a dot plot:
+```{r}
+plot.df <- data.frame(Activity = p2$counts[,"ACACTCC"], anno = annotation.tissue)
+
+ggplot(plot.df, aes(anno, Activity, col=anno)) + 
+  geom_jitter() +
+  labs(title="miR-122-5p activity", x="", y="Normalized activity") +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=90))
+```
+
+Further, we can try to identify cell type-specific miRNAs:
+```{r}
+p2$getDifferentialGenes(groups = annotation.tissue, 
+                        upregulated.only = T, 
+                        verbose = T, 
+                        append.specificity.metrics = T, 
+                        append.auc = T)
+```
+
+Let's look at the best markers for liver cells:
+```{r}
+p2$diffgenes$counts$customClustering$Liver %>% 
+  dplyr::filter(Specificity > 0.7, ExpressionFraction > 0.5) %>% 
+  dplyr::arrange(desc(Precision)) %>% 
+  head(10)
+```
+
+We plot the top hit in  the embedding:
+```{r}
+p2$plotEmbedding(type='PCA', 
+                 embeddingType='tSNE', 
+                 colors=p2$counts[,"ACGACTC"], 
+                 main="ACGACTC activity")
+```
+
+And in a dot plot:
+```{r}
+plot.df <- data.frame(Activity = p2$counts[,"ACGACTC"], anno = annotation.tissue)
+
+ggplot(plot.df, aes(anno, Activity, col=anno)) + 
+  geom_jitter() +
+  labs(title="ACGACTC activity", x="", y="Normalized activity") +
+  theme_bw() +
+  theme(legend.position="none",
+        axis.text.x = element_text(angle=90))
+```
+
+Lastly, let's plot a heatmap of the top markers for all cell types to investigate how well they distinguish our cells:
+```{r}
+genes <- sapply(p2$diffgenes$counts$customClustering, function(x) rownames(x)[1:5]) %>% 
+  c() %>% 
+  .[!is.na(.)]
+
+p2$plotGeneHeatmap(genes=genes, 
+                   groups=annotation.tissue, 
+                   gradient.range.quantile = 0.9)
+```
+
+```{r}
+sessionInfo()
+```
